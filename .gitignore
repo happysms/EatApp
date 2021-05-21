@@ -35,6 +35,3 @@ out/
 
 ### VS Code ###
 .vscode/
-
-# Project exclude paths
-/eatgo-web/node_modules/
