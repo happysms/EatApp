@@ -1,7 +1,6 @@
 package com.example.eatgo.application;
 
 import com.example.eatgo.domain.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -11,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -22,12 +22,24 @@ public class RestaurantServiceTest {
     @Mock
     private RestaurantRepository restaurantRepository;
 
+    @Mock
+    private MenuItemRepository menuItemRepository;
+
     @BeforeEach  // 모든 테스트가 실행되기 전에 한번 씩 실행되게끔한다.
     public void setUp(){
         MockitoAnnotations.initMocks(this); // 테스트 객체에 있는 @Mock이 붙은 객체를 초기화하는 객체
 
         mockRestaurantRepository();
-        restaurantService = new RestaurantService(restaurantRepository);
+        mockMenuItemRepository();
+
+        restaurantService = new RestaurantService(restaurantRepository , menuItemRepository);
+    }
+
+    private void mockMenuItemRepository() {
+        List<MenuItem> menuItems = new ArrayList<>();
+        menuItems.add(new MenuItem("kimchi"));
+
+        given(menuItemRepository.findAllByRestaurantId(1004L)).willReturn(menuItems);
     }
 
     private void mockRestaurantRepository() {
@@ -44,9 +56,14 @@ public class RestaurantServiceTest {
 
     @Test
     public void getRestaurantExisted(){
+
         Restaurant restaurant = restaurantService.getRestaurant(1004L);
+
+        MenuItem menuItem = restaurant.getMenuItems().get(0);
+
         assertEquals(restaurant.getId() , 1004L);
 
+        assertEquals(menuItem.getName() , "kimchi");
     }
 
     @Test

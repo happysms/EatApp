@@ -34,8 +34,4 @@ public class MenuItemService {
         menuItemRepository.save(menuItem);
         System.out.println("commit");
     }
-
-    public List<MenuItem> getMenuItems(Long restaurantId) {
-        return menuItemRepository.findAllByRestaurantId(restaurantId);
-    }
 }
